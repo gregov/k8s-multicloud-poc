@@ -3,12 +3,9 @@ name: Docker Image CI
 on: [push]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag stateful-test-app:$(date +%s)
+      run: docker build -t docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:1.0
