@@ -9,3 +9,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build -t docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:$GITHUB_RUN_NUMBER ./app
+    - name: Authenticate to the registry
+      run: docker login -u gregov -p {{secrets.GITHUB_TOKEN}} docker.pkg.github.com
+    - name: Push the container
+      run: docker push docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:$GITHUB_RUN_NUMBER
