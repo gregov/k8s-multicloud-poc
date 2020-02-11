@@ -9,7 +9,7 @@ import socket
 
 app = Flask(__name__)
 
-statefile = "data/data.json"
+statefile = "/data/data.json"
 
 @app.route('/')
 def home():

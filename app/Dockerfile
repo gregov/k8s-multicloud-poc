@@ -10,6 +10,8 @@ ENV FLASK_ENV "development"
 ENV FLASK_DEBUG True
 
 RUN mkdir /app
+RUN mkdir /data
+
 WORKDIR /app
 
 COPY Pip* /app/
