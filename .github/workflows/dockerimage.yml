@@ -8,4 +8,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build -t docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:1.0
+      run: docker build -t docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:$GITHUB_RUN_NUMBER .
+    - name: Push the Docker image
+      run: docker push docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:$GITHUB_RUN_NUMBER
