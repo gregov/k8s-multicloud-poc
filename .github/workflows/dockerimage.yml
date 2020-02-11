@@ -13,5 +13,7 @@ jobs:
         docker build -t docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:$GITHUB_RUN_NUMBER .
     - name: Authenticate to the registry and push the container
       run:  |
-        docker login -u publisher -p {{secrets.GITHUB_PACKAGE_REGISTRY_TOKEN}} docker.pkg.github.com
+        docker login -u publisher -p {{$GITHUB_PACKAGE_REGISTRY_TOKEN}} docker.pkg.github.com
         docker push docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:$GITHUB_RUN_NUMBER
+      env:
+        GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_PACKAGE_REGISTRY_TOKEN }}
