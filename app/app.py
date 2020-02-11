@@ -4,6 +4,7 @@ from flask import jsonify
 from pprint import pprint
 import os
 import json
+import socket
 
 
 app = Flask(__name__)
@@ -20,7 +21,7 @@ def home():
     else:
         history = []
 
-    result = jsonify({'my_hostname': request.hostname,
+    result = jsonify({'my_hostname': socket.gethostname(),
                       'your_ip': remote_ip,
                       'history': history
                      }), 200

@@ -1,4 +1,4 @@
-FROM python:3.7.1
+FROM python:3.8.1
 
 LABEL Author="Greg Reboul"
 LABEL E-mail="gregoire.reboul@gmail.com"
@@ -6,7 +6,7 @@ LABEL version="0.0.1"
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV FLASK_APP "app.py"
-ENV FLASK_ENV "prod"
+ENV FLASK_ENV "development"
 ENV FLASK_DEBUG True
 
 RUN mkdir /app
@@ -22,4 +22,4 @@ ADD . /app
 
 EXPOSE 80
 
-CMD flask run --host=0.0.0.0 --port=80
+CMD pipenv run flask run --host=0.0.0.0 --port=80

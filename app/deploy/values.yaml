@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository:  docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app
-  tag: 14
+  tag: 15
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
