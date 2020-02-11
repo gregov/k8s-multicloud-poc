@@ -1,0 +1,5 @@
+azure_config.sh
+.tfstate
+.tfstate.backup
+.terraform
+app/data
