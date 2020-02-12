@@ -1,0 +1,20 @@
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedIngress
+metadata:
+  name: test-ingress
+  namespace: global
+spec:
+  template:
+    spec:
+      rules:
+      - host: test-ingress.global.earlyfrench.ca
+        http:
+          paths:
+          - backend:
+              serviceName: test-service
+              servicePort: 80
+  placement:
+    clusters:
+    - name: cluster-federation-aws
+    - name: cluster-federation-azure
+    - name: cluster-federation-gcp

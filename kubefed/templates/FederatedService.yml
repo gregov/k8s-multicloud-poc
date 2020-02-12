@@ -1,0 +1,19 @@
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedService
+metadata:
+  name: test-service
+  namespace: global
+spec:
+  template:
+    spec:
+      selector:
+        app: test-app
+      type: Loadbalancer
+      ports:
+        - name: http
+          port: 80
+  placement:
+    clusters:
+    - name: cluster-federation-aws
+    - name: cluster-federation-azure
+    - name: cluster-federation-gcp

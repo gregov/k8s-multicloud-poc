@@ -1,0 +1,31 @@
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: test-deployment
+  namespace: global
+spec:
+  template:
+    metadata:
+      labels:
+        app: test-app
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app: test-app
+      template:
+        metadata:
+          labels:
+            app: test-app
+        spec:
+          containers:
+          - image: nginx
+            name: test-app
+  placement:
+    clusters:
+    - name: cluster-federation-azure
+    - name: cluster-federation-gcp
+
+#imagePullSecrets:
+#- name: regcred
+#docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:17
