@@ -1,3 +1,9 @@
+# Installing the federation on AWS
+```
+kubectl config use-context arctiq-ext-mission-aws
+```
+
+
 1. Setting up a federation
 a. Install the server side
 ```

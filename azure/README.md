@@ -47,10 +47,9 @@ Creating a role assignment under the scope of "/subscriptions/cecf816f-9adc-4ee9
 
 3. Create the AKS cluster
 ```
-terraform plan -out out.plan
-terraform apply out.plan
+terraform apply -var-file=../secrets/azure.tfvars -auto-approve
 
-terraform output kube_config >> ~/.kube/config
+terraform output kube_config >> ~/.kube/config_azure
 ```
 
 then manually do some cleanup in the config
