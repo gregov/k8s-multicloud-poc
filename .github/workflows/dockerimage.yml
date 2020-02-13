@@ -3,7 +3,7 @@ name: Docker Image CI
 on: 
   push:
     paths:
-    - 'app/**'
+    - 'guestbook-go/src/**'
 
 jobs:
   build:
@@ -13,8 +13,8 @@ jobs:
     - name: Build the Docker image
       run: |
         cd app
-        docker build -t docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:$GITHUB_RUN_NUMBER .
+        docker build -t docker.pkg.github.com/gregov/arctiq-ext-mission/guestbook-go:$GITHUB_RUN_NUMBER .
     - name: Authenticate to the registry and push the container
       run:  |
         docker login docker.pkg.github.com -u ${{ github.actor }} -p "${{ secrets.GITHUB_TOKEN }}"
-        docker push docker.pkg.github.com/gregov/arctiq-ext-mission/stateful-test-app:$GITHUB_RUN_NUMBER
+        docker push docker.pkg.github.com/gregov/arctiq-ext-mission/guestbook-go:$GITHUB_RUN_NUMBER

@@ -62,4 +62,6 @@ kubectl config use-context arctiq-ext-mission-gcp
 kubectl apply -f secret/external-dns.yml
 ```
 
-## Todo take care of the routing
+## Details on the routing
+
+https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-values-geo.html
