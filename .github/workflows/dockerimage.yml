@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: |
-        cd app
+        cd guestbook-go/src
         docker build -t docker.pkg.github.com/gregov/arctiq-ext-mission/guestbook-go:$GITHUB_RUN_NUMBER .
     - name: Authenticate to the registry and push the container
       run:  |
