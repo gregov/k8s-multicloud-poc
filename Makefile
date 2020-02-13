@@ -1,32 +1,36 @@
 .DEFAULT_GOAL:=help
 SHELL:=/usr/bin/env bash
 
+GCP_REGION=australia-southeast1
+AWS_REGION=sa-east-1
+FEDERATION_HOST=arctiq-ext-mission-aws
+
 ##@ Creation
 create-aws-cluster:  ## Create EKS on AWS
 	terraform init aws
 	terraform apply -state=aws/terraform.state -auto-approve aws
-	aws eks update-kubeconfig --name arctiq-ext-mission-aws --alias arctiq-ext-mission-aws --kubeconfig ~/.kube/config_aws
+	aws eks update-kubeconfig --region $(AWS_REGION) --name arctiq-ext-mission-aws --alias arctiq-ext-mission-aws --kubeconfig .kube_config_aws
 	# Fix config file syntax
 	# /!\ Untested on other platforms than macOs
-	bash aws/fix-kubectl-config.sh ~/.kube/config_aws
+	bash aws/fix-kubectl-config.sh .kube_config_aws
 
 create-azure-cluster:  ## Create AKS on Azure
 	terraform init azure
 	terraform apply -state=azure/terraform.state -var-file=secrets/azure.tfvars -auto-approve azure
-	terraform output -state=azure/terraform.state kube_config > ~/.kube/config_azure
+	terraform output -state=azure/terraform.state kube_config > .kube_config_azure
 
 create-gcp-cluster:   ## Create GKS on GCP
 	terraform init gcp
 	terraform apply -state=gcp/terraform.state -var-file=gcp/variables.tfvars -auto-approve gcp
-	KUBECONFIG=~/.kube/config_gcp gcloud container clusters get-credentials arctiq-ext-missi-1581512285377-cluster --region europe-north1
-	sed  s/gke_arctiq-ext-.*-cluster/arctiq-ext-mission-gcp/ -i  ~/.kube/config_gcp
+	KUBECONFIG=.kube_config_gcp gcloud container clusters get-credentials arctiq-ext-missi-1581512285377-cluster --region $(GCP_REGION)
+	sed -i .bak s/gke_arctiq-ext-.*-cluster/arctiq-ext-mission-gcp/  .kube_config_gcp
 
 create-all-clusters: create-aws-cluster create-azure-cluster create-gcp-cluster ## Create all clustes
 
 ##@ Federation
 federation-host: ## Initialise the federation host
-	export KUBECONFIG=~/.kube/config_aws:~/.kube/config_gcp:~/.kube/config_azure
-	kubectl config use-context arctiq-ext-mission-aws
+	KUBECONFIG=.kube_config_aws:.kube_config_azure:.kube_config_gcp kubectl config view --raw > ~/.kube/config
+	kubectl config use-context $(FEDERATION_HOST)
 	kubectl apply -f kubefed/tiller-rbac.yml
 	helm init --service-account tiller --wait
 	helm repo add kubefed-charts https://raw.githubusercontent.com/kubernetes-sigs/kubefed/master/charts
@@ -35,14 +39,14 @@ federation-host: ## Initialise the federation host
 	kubectl apply -f kubefed/federated-namespace.yml
 
 add-federation-members: ## Add all federation members
-	kubefedctl join cluster-federation-azure --cluster-context arctiq-ext-mission-azure --host-cluster-context minikube -v 2
-	kubefedctl join cluster-federation-aws --cluster-context arctiq-ext-mission-aws --host-cluster-context minikube -v 2
-	kubefedctl join cluster-federation-gcp --cluster-context arctiq-ext-mission-gcp --host-cluster-context minikube -v 2
+	kubefedctl join cluster-federation-azure --cluster-context arctiq-ext-mission-azure --host-cluster-context $(FEDERATION_HOST) -v 2
+	kubefedctl join cluster-federation-aws --cluster-context arctiq-ext-mission-aws --host-cluster-context $(FEDERATION_HOST) -v 2
+	kubefedctl join cluster-federation-gcp --cluster-context arctiq-ext-mission-gcp --host-cluster-context $(FEDERATION_HOST) -v 2
 
 remove-federation-members: ## Remove all federation members
-	kubefedctl unjoin cluster-federation-azure --cluster-context arctiq-ext-mission-azure --host-cluster-context minikube -v 2
-	kubefedctl unjoin cluster-federation-aws --cluster-context arctiq-ext-mission-aws --host-cluster-context minikube -v 2
-	kubefedctl unjoin cluster-federation-gcp --cluster-context arctiq-ext-mission-gcp --host-cluster-context minikube -v 2
+	kubefedctl unjoin cluster-federation-azure --cluster-context arctiq-ext-mission-azure --host-cluster-context $(FEDERATION_HOST) -v 2
+	kubefedctl unjoin cluster-federation-aws --cluster-context arctiq-ext-mission-aws --host-cluster-context $(FEDERATION_HOST) -v 2
+	kubefedctl unjoin cluster-federation-gcp --cluster-context arctiq-ext-mission-gcp --host-cluster-context $(FEDERATION_HOST) -v 2
 
 ##@ Application
 deploy:  ## Deploy the guestbook across all clusters

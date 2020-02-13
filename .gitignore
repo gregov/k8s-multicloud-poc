@@ -1,5 +1,7 @@
-**/*.tfstate*
+terraform.state
+terraform.state.backup
 app/data
 **/.terraform
 **/plan.out
 secrets/
+.kube_config_*
