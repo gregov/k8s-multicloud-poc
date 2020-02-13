@@ -55,9 +55,9 @@ mv kubefedctl /usr/local/bin/
 /!\ if not working properly the kubectl config might have to be altered
 
 ```
-kubefedctl join cluster-federation-azure --cluster-context arctiq-ext-mission-azure --host-cluster-context minikube -v 2
-kubefedctl join cluster-federation-aws --cluster-context arctiq-ext-mission-aws --host-cluster-context minikube -v 2
-kubefedctl join cluster-federation-gcp --cluster-context arctiq-ext-mission-gcp --host-cluster-context minikube -v 2
+kubefedctl join cluster-federation-azure --cluster-context arctiq-ext-mission-azure --host-cluster-context arctiq-ext-mission-aws -v 2
+kubefedctl join cluster-federation-aws --cluster-context arctiq-ext-mission-aws --host-cluster-context arctiq-ext-mission-aws -v 2
+kubefedctl join cluster-federation-gcp --cluster-context arctiq-ext-mission-gcp --host-cluster-context arctiq-ext-mission-aws -v 2
 ```
  
 At this point the global cluster should be showing the three clusters

@@ -123,6 +123,9 @@ secrets are not working on remote cluster to access github registry
 
 the federation did not survive a replacement of nodegroups on the host
 
+I need an autoscaler for each cluster
+
+
 Questions:
 How to create a persistant storage cross-cloud ?
 
