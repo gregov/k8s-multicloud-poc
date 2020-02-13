@@ -3,34 +3,10 @@
 kubectl config use-context arctiq-ext-mission-aws
 ```
 
-
 1. Setting up a federation
 a. Install the server side
 ```
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: tiller
-  namespace: kube-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: tiller
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-  - kind: ServiceAccount
-    name: tiller
-    namespace: kube-system
-EOF
-
-```
-
-```
+kubectl apply -f tiller-rbac.yml
 helm init --service-account tiller --wait
 ```
 
@@ -66,18 +42,14 @@ kubectl -n kube-federation-system get kubefedclusters
 ```
 
 3. Install the replicated namespace
-kubectl apply -f kubefed/templates/LocalNamespace.yml
-kubectl apply -f kubefed/templates/FederatedNamespace.yml
+```
+kubectl apply -f kubefed/federated-namespace.yml
+```
 
 4. Deploy something federated
-kubectl apply -f kubefed/templates/FederatedDeployment.yml
-
-Or 
-
-kubectl apply -f kubefed/guestbook-go/guestbook-federated.yml
-
-
-
+```
+kubectl apply -f guestbook-go/guestbook-federated.yml
+```
 
 # Uninstall
 

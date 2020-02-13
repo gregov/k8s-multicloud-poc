@@ -30,6 +30,10 @@ variable location {
     default = "Canada Central"
 }
 
+variable region {
+    default = "canadacentral"
+}
+
 variable log_analytics_workspace_name {
     default = "testLogAnalyticsWorkspaceName"
 }

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: global
+---
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedNamespace
+metadata:
+  name: global
+  namespace: global
+spec:
+  placement:
+    clusters:
+    - name: cluster-federation-aws
+    - name: cluster-federation-azure
+    - name: cluster-federation-gcp

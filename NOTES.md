@@ -8,11 +8,11 @@ Perform blue/green deployment of the application across both cluster
 ---
 Decisions:
 
-AWS/EKS in us-east-1
+AWS/EKS in sa-east-1
 Azure/AKS in canada central
-First test application will be the G
+GCP/GKS in australia-southeast1
 ~~Application will be a custom flask application~~
-Application will be the google guestbook
+Application will be the google guestbook (go+redis)
 
 ---
 Prerequisite: AWS account and Azure account
