@@ -10,7 +10,9 @@ Decisions:
 
 AWS/EKS in us-east-1
 Azure/AKS in canada central
-Application will be a custom flask application
+First test application will be the G
+~~Application will be a custom flask application~~
+Application will be the google guestbook
 
 ---
 Prerequisite: AWS account and Azure account
@@ -33,11 +35,6 @@ helm init --service-account tiller
 ```
 
 
-
-
-
-
-
 6. Installing a federation
 
 7. The application
@@ -53,10 +50,6 @@ global.earlyfrench.ca
 ```
 -> Route53
 
-
-
-
-
 10. setting up a git repository
 git remote add  github https://github.com/gregov/arctiq-ext-mission.git
 
@@ -69,13 +62,16 @@ TODO:
 1. Refine the github action to leverage the releases
 
 2. Use Route53 to perform a global load balancing
+	-> try to use externalDNS
 
 3. Automate deployment and set up a chat-ops 
 
+4. Add a cluster scaling service
+
 
 Feedback:
-	Mike: use a more distant region to showcase lag -> done, GCP in northern europe
-	Kyle: use GCP -> done
+*	Mike: use a more distant region to showcase lag -> done, GCP is in northern europe
+*	Kyle: use GCP -> done
 
 ---
 Work log
@@ -97,6 +93,8 @@ Tuesday Feb 11th
 
 Wednesday Feb 12th
 9:00am Federating GCP + AWS + Azure
+6:00pm All clusters are working with LB
+8:00pm Rewrote the federated deployment for the app
 
 Problems:
 Instances not available in Azure Canada East
@@ -119,16 +117,15 @@ helm pullimage is not working properly
 -> Actually my image is way to big / connection too slow
 the federation cannot join for some reasons
 -> kubefedctl requires a very specially formatted kube config
-secrets are not working on remote cluster to access github registry
-
-the federation did not survive a replacement of nodegroups on the host
-
-I need an autoscaler for each cluster
-
+??? secrets are not working on remote cluster to access github registry
+??? propagation is note working with a status "CheckClusters"&"CreationFailed"
 
 Questions:
 How to create a persistant storage cross-cloud ?
 
+
+-- Take away --
+responsivity: GCP > AWS > Azure
 
 
 References:

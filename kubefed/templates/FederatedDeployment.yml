@@ -25,6 +25,7 @@ spec:
     clusters:
     - name: cluster-federation-azure
     - name: cluster-federation-gcp
+    - name: cluster-federation-aws
 
 #imagePullSecrets:
 #- name: regcred

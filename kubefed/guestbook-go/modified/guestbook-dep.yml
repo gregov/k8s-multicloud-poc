@@ -1,5 +1,5 @@
-apiVersion: v1
-kind: ReplicationController
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   labels:
     app: redis
@@ -9,8 +9,9 @@ metadata:
 spec:
   replicas: 1
   selector:
-    app: redis
-    role: master
+    matchLabels:
+      app: redis
+      role: master
   template:
     metadata:
       labels:
@@ -39,8 +40,8 @@ spec:
     app: redis
     role: master
 ---
-apiVersion: v1
-kind: ReplicationController
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   labels:
     app: redis
@@ -50,8 +51,9 @@ metadata:
 spec:
   replicas: 2
   selector:
-    app: redis
-    role: slave
+    matchLabels:
+      app: redis
+      role: slave
   template:
     metadata:
       labels:
@@ -59,7 +61,7 @@ spec:
         role: slave
     spec:
       containers:
-      - image: redis:2.8.23
+      - image: k8s.gcr.io/redis-slave:v2
         name: redis-slave
         ports:
         - containerPort: 6379
@@ -80,8 +82,8 @@ spec:
     app: redis
     role: slave
 ---
-apiVersion: v1
-kind: ReplicationController
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   labels:
     app: guestbook
@@ -89,7 +91,8 @@ metadata:
 spec:
   replicas: 3
   selector:
-    app: guestbook
+    matchLabels:
+      app: guestbook
   template:
     metadata:
       labels:
