@@ -97,6 +97,11 @@ Wednesday Feb 12th
 8:00pm Rewrote the federated deployment for the app
 9:30pm Federated deployment is working in all clusters
 
+Thursday Feb 13th
+8:00am Start creating a Makefile for all operations
+12:00am Makefile is working
+2:00pm External DNS works, I will have to hide aws creds from the manifest before I can commit
+
 Problems:
 Instances not available in Azure Canada East
 -> move to CA-central

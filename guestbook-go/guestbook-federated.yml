@@ -194,3 +194,22 @@ spec:
       selector:
         app: guestbook
       type: LoadBalancer
+  overrides:
+    - clusterName: cluster-federation-aws
+      clusterOverrides:
+        - path: "/metadata/annotations"
+          op: "add"
+          value:
+            external-dns.alpha.kubernetes.io/hostname: aws-guestbook.global.earlyfrench.ca
+    - clusterName: cluster-federation-azure
+      clusterOverrides:
+        - path: "/metadata/annotations"
+          op: "add"
+          value:
+            external-dns.alpha.kubernetes.io/hostname: azure-guestbook.global.earlyfrench.ca
+    - clusterName: cluster-federation-gcp
+      clusterOverrides:
+        - path: "/metadata/annotations"
+          op: "add"
+          value:
+            external-dns.alpha.kubernetes.io/hostname: gcp-guestbook.global.earlyfrench.ca
