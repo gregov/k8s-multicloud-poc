@@ -28,15 +28,22 @@ create-gcp-cluster:   ## Create GKS on GCP
 create-all-clusters: create-aws-cluster create-azure-cluster create-gcp-cluster ## Create all clustes
 
 ##@ Federation
-federation-host: ## Initialise the federation host
+merge-contexts:  ## Merge all kubeconfigs
 	KUBECONFIG=.kube_config_aws:.kube_config_azure:.kube_config_gcp kubectl config view --raw > ~/.kube/config
 	kubectl config use-context $(FEDERATION_HOST)
+
+federation-host: merge-contexts  ## Initialise the federation host
 	kubectl apply -f kubefed/tiller-rbac.yml
 	helm init --service-account tiller --wait
 	helm repo add kubefed-charts https://raw.githubusercontent.com/kubernetes-sigs/kubefed/master/charts
 	helm repo update
 	helm install  kubefed-charts/kubefed --name kubefed --version=v0.1.0-rc6 --namespace kube-federation-system --wait
 	kubectl apply -f kubefed/federated-namespace.yml
+
+install-external-dns:  ## Install external dns
+	cd external-dns; make install-external-dns
+remove-external-dns:  ## Install external dns
+	cd external-dns; make remove-external-dns
 
 add-federation-members: ## Add all federation members
 	kubefedctl join cluster-federation-azure --cluster-context arctiq-ext-mission-azure --host-cluster-context $(FEDERATION_HOST) -v 2
@@ -52,6 +59,9 @@ remove-federation-members: ## Remove all federation members
 deploy:  ## Deploy the guestbook across all clusters
 	kubectl apply -f guestbook-go/guestbook-federated.yml
 
+undeploy:  ## Deploy the guestbook across all clusters
+	kubectl delete -f guestbook-go/guestbook-federated.yml
+
 ##@ Destructions
 destroy-aws-cluster:  ## Destroy AWS cluster
 	terraform destroy -auto-approve  -state=gcp/terraform.state aws
@@ -63,6 +73,11 @@ destroy-gcp-cluster:  ## Destroy GCP cluster
 	terraform destroy -var-file=variables.tfvars -auto-approve  -state=gcp/terraform.state gcp
 
 destroy-all-clusters: destroy-aws-cluster destroy-azure-cluster destroy-gcp-cluster ## Destroy all clustes
+
+##@ End to end
+all: create-all-clusters federation-host add-federation-members install-external-dns deploy
+
+clean: undeploy destroy-all-clusters
 
 ##@ Helpers
 help:  ## Display this help

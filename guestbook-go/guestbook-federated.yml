@@ -187,6 +187,7 @@ spec:
     metadata:
       annotations:
         external-dns.alpha.kubernetes.io/hostname: guestbook.global.earlyfrench.ca
+        external-dns.alpha.kubernetes.io/ttl: "60"
       labels:
         app: guestbook
     spec:
@@ -202,22 +203,16 @@ spec:
         - path: "/metadata/annotations"
           op: "add"
           value:
-            external-dns.alpha.kubernetes.io/hostname: guestbook.global.earlyfrench.ca
-            external-dns.alpha.kubernetes.io/set-identifier: aws/brazil
-            external-dns.alpha.kubernetes.io/aws-geolocation-continent-code: SA
+            external-dns.alpha.kubernetes.io/hostname: aws-guestbook.global.earlyfrench.ca
     - clusterName: cluster-federation-azure
       clusterOverrides:
         - path: "/metadata/annotations"
           op: "add"
           value:
-            external-dns.alpha.kubernetes.io/hostname: guestbook.global.earlyfrench.ca
-            external-dns.alpha.kubernetes.io/set-identifier: azure/canada
-            external-dns.alpha.kubernetes.io/aws-geolocation-continent-code: NA
+            external-dns.alpha.kubernetes.io/hostname: azure-guestbook.global.earlyfrench.ca
     - clusterName: cluster-federation-gcp
       clusterOverrides:
         - path: "/metadata/annotations"
           op: "add"
           value:
-            external-dns.alpha.kubernetes.io/hostname: guestbook.global.earlyfrench.ca
-            external-dns.alpha.kubernetes.io/set-identifier: gcp/australia
-            external-dns.alpha.kubernetes.io/aws-geolocation-continent-code: OC
+            external-dns.alpha.kubernetes.io/hostname: gcp-guestbook.global.earlyfrench.ca
