@@ -62,3 +62,8 @@ aks-agentpool-18470476-vmss000001   Ready    agent   12m   v1.14.8
 aks-agentpool-18470476-vmss000002   Ready    agent   12m   v1.14.8
 
 ```
+
+# To delete the cluster
+```
+terraform destroy -var-file=../secrets/azure.tfvars -auto-approve
+```

@@ -77,12 +77,12 @@ Feedback:
 Work log
 
 Monday Feb 10th
-5:30 received the challenge
-6:00 installed terraform and iterm2
-7:00 configured terraform with aws and azure
-9:00 Azure AKS is up and running
-9:30 AWS EKS is up and running
-9:45 Destroying the configs and calling it a day
+5:30pm received the challenge
+6:00pm installed terraform and iterm2
+7:00pm configured terraform with aws and azure
+9:00pm Azure AKS is up and running
+9:30pm AWS EKS is up and running
+9:45pm Destroying the configs and calling it a day
 
 Tuesday Feb 11th
 6:30am Created a new AWS account to leverage free tier
@@ -95,6 +95,7 @@ Wednesday Feb 12th
 9:00am Federating GCP + AWS + Azure
 6:00pm All clusters are working with LB
 8:00pm Rewrote the federated deployment for the app
+9:30pm Federated deployment is working in all clusters
 
 Problems:
 Instances not available in Azure Canada East

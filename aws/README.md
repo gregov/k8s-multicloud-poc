@@ -30,3 +30,8 @@ Max pods per node depends on instance size
 
 see:
 https://github.com/awslabs/amazon-eks-ami/blob/master/files/eni-max-pods.txt
+
+# To delete the cluster
+```
+terraform destroy -auto-approve
+```

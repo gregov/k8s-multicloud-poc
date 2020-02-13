@@ -51,3 +51,8 @@ KUBECONFIG=~/.kube/config_gcp gcloud container clusters get-credentials arctiq-e
 sed  s/gke_arctiq-ext-.*-cluster/arctiq-ext-mission-gcp/ -i  ~/.kube/config_gcp
 ```
 + rename the context "arctiq-ext-mission-gcp"
+
+# To delete the cluster
+```
+terraform destroy -var-file=variables.tfvars -auto-approve
+```
