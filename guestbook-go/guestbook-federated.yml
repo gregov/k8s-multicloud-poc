@@ -187,9 +187,12 @@ spec:
     metadata:
       labels:
         app: guestbook
+      annotations:
+        external-dns.alpha.kubernetes.io/set-identifier: guestbook-global
+        external-dns.alpha.kubernetes.io/ttl: 60
     spec:
       ports:
-      - port: 3000
+      - port: 80
         targetPort: http-server
       selector:
         app: guestbook
@@ -200,16 +203,19 @@ spec:
         - path: "/metadata/annotations"
           op: "add"
           value:
-            external-dns.alpha.kubernetes.io/hostname: aws-guestbook.global.earlyfrench.ca
+            external-dns.alpha.kubernetes.io/hostname: guestbook.global.earlyfrench.ca
+            external-dns.alpha.kubernetes.io/aws-geolocation-continent-code: "South America"
     - clusterName: cluster-federation-azure
       clusterOverrides:
         - path: "/metadata/annotations"
           op: "add"
           value:
-            external-dns.alpha.kubernetes.io/hostname: azure-guestbook.global.earlyfrench.ca
+            external-dns.alpha.kubernetes.io/hostname: guestbook.global.earlyfrench.ca
+            external-dns.alpha.kubernetes.io/aws-geolocation-continent-code: "North America"
     - clusterName: cluster-federation-gcp
       clusterOverrides:
         - path: "/metadata/annotations"
           op: "add"
           value:
-            external-dns.alpha.kubernetes.io/hostname: gcp-guestbook.global.earlyfrench.ca
+            external-dns.alpha.kubernetes.io/hostname: guestbook.global.earlyfrench.ca
+            external-dns.alpha.kubernetes.io/aws-geolocation-continent-code: "Oceania"
