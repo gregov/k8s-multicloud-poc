@@ -40,28 +40,16 @@ aws iam create-access-key --user-name external-dns-global
 aws iam attach-user-policy --user-name external-dns-global --policy-arn arn:aws:iam::163775068734:policy/external-dns-aws-policy
 ```
 
-## I will generate the manifest, because I don't want Tiller on the federation members
-```
-helm install --debug --dry-run --name external-dns-global \
---set provider=aws --set aws.zoneType=public --set aws.region=sa-east-1 \
---set aws.credentials.accessKey=AKIASMIOBHI7MJG3T2N4 \
---set aws.credentials.secretKey=IL/4*******************l6RD \
---set txtOwnerId=ZR42SNG7WXR4K --set domainFilters[0]=global.earlyfrench.ca 
---set image.tag=0.5.18 \
-stable/external-dns
-```
 
-then copy the generated manifest to secrets/external-dns.yml (secrets are in plain text)
-change the zone owner id for each target cluster
+## clusterrolebindings is not federated by default (known bug)
+https://github.com/kubernetes-sigs/kubefed/pull/1162
+kubefedctl enable clusterrolebindings.rbac.authorization.k8s.io
 
-## Manually applying the manifest everywhere
-```
-kubectl config use-context arctiq-ext-mission-azure
-kubectl apply -f secrets/external-dns-azure.yml
-kubectl config use-context arctiq-ext-mission-aws
-kubectl apply -f secrets/external-dns-aws.yml
-kubectl config use-context arctiq-ext-mission-gcp
-kubectl apply -f secrets/external-dns-gcp.yml
+
+## install the secret
+
+## deploy the federated manifest
+
 ```
 
 ## Details on the routing

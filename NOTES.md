@@ -35,6 +35,13 @@ helm init --service-account tiller
 ```
 
 
+
+kubectl get federatedsecret external-dns-global -n global -o json | jq jq --arg ZZZZ $creds '.metadata.spec.template.data.credentials |= $creds'
+
+
+# Create a secret with several keys
+
+
 6. Installing a federation
 
 7. The application
@@ -116,18 +123,27 @@ kubefed-charts/kubefed is not compatible with Helm3
 tiller pod is taking forever to launch 
 -> I had a single node
 kubefed unistall is buggy
--> thre is an additional manual step to take
+-> there is an additional manual step to take
 github actions docker push fails
 -> you need to have a personal token setup (and it's not documented)
 helm pullimage is not working properly
 -> Actually my image is way to big / connection too slow
 the federation cannot join for some reasons
 -> kubefedctl requires a very specially formatted kube config
-??? secrets are not working on remote cluster to access github registry
-??? propagation is note working with a status "CheckClusters"&"CreationFailed"
+propagation is not working with a status "CheckClusters"&"CreationFailed"
+-> annotation have to be one level below in the federated deployment
+default zone is not working for external-dns
+-> not supported for now, AWS API does not offer the option, it's console only
+secrets are not working on remote cluster to access github registry
+-> fixed probably pebcak
+aws vpc cannot be deleted
+-> need to undeploy (delete the ELB) before destroying the cluster
+clusterrolebindings is not federated by default (known bug)
+-> need to enable it manually
 
 Questions:
 How to create a persistant storage cross-cloud ?
+What is the best layout for terraform
 
 
 -- Take away --

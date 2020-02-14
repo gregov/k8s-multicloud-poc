@@ -2,12 +2,12 @@
 # Variables Configuration
 #
 
-variable "cluster-name" {
+variable "eks_cluster_name" {
   default = "arctiq-ext-mission-aws"
   type    = string
 }
 
-variable "region" {
+variable "eks_region" {
   default = "sa-east-1"
   type    = string
 }
