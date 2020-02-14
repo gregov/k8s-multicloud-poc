@@ -161,8 +161,10 @@ spec:
           labels:
             app: guestbook
         spec:
+          imagePullSecrets:
+          - name: regcred
           containers:
-          - image: k8s.gcr.io/guestbook:v3
+          - image: docker.pkg.github.com/gregov/arctiq-ext-mission/guestbook-go:21
             name: guestbook
             ports:
             - containerPort: 3000

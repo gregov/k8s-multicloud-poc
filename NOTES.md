@@ -123,8 +123,13 @@ helm pullimage is not working properly
 -> Actually my image is way to big / connection too slow
 the federation cannot join for some reasons
 -> kubefedctl requires a very specially formatted kube config
+propagation is not working with a status "CheckClusters"&"CreationFailed"
+-> annotation have to be one level below in the federated deployment
+default zone is not working for external-dns
+-> not supported for now, AWS API does not offer the option, it's console only
+
 ??? secrets are not working on remote cluster to access github registry
-??? propagation is note working with a status "CheckClusters"&"CreationFailed"
+
 
 Questions:
 How to create a persistant storage cross-cloud ?

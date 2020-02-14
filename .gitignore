@@ -1,7 +1,7 @@
-terraform.state
-terraform.state.backup
 app/data
 **/.terraform
 **/plan.out
 secrets/
 .kube_config_*
+terraform/google-cloud-sdk
+*terraform.tfstate*
