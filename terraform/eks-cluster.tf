@@ -28,7 +28,7 @@ provider "http" {}
 #  * Route Table
 #
 
-resource "aws_vpc" "eks" {
+resource "aws_vpc" "demo" {
   cidr_block = "10.0.0.0/16"
 
   tags = map(
@@ -37,12 +37,12 @@ resource "aws_vpc" "eks" {
   )
 }
 
-resource "aws_subnet" "eks" {
+resource "aws_subnet" "demo" {
   count = 2
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
   cidr_block        = "10.0.${count.index}.0/24"
-  vpc_id            = aws_vpc.eks.id
+  vpc_id            = aws_vpc.demo.id
 
   tags = map(
     "Name", "arctiq-ext-mission-cluster",
@@ -50,107 +50,30 @@ resource "aws_subnet" "eks" {
   )
 }
 
-resource "aws_internet_gateway" "eks" {
-  vpc_id = aws_vpc.eks.id
+resource "aws_internet_gateway" "demo" {
+  vpc_id = aws_vpc.demo.id
 
   tags = {
     Name = "arctiq-ext-mission-gateway"
   }
 }
 
-resource "aws_route_table" "eks" {
-  vpc_id = aws_vpc.eks.id
+resource "aws_route_table" "demo" {
+  vpc_id = aws_vpc.demo.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.eks.id
+    gateway_id = aws_internet_gateway.demo.id
   }
 }
 
-resource "aws_route_table_association" "eks" {
+resource "aws_route_table_association" "demo" {
   count = 2
 
-  subnet_id      = aws_subnet.eks.*.id[count.index]
-  route_table_id = aws_route_table.eks.id
+  subnet_id      = aws_subnet.demo.*.id[count.index]
+  route_table_id = aws_route_table.demo.id
 }
 
-#
-# EKS Cluster Resources
-#  * IAM Role to allow EKS service to manage other AWS services
-#  * EC2 Security Group to allow networking traffic with EKS cluster
-#  * EKS Cluster
-#
-
-resource "aws_iam_role" "eks-cluster" {
-  name = "arctiq-ext-mission-cluster-role"
-
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-}
-
-resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks-cluster.name
-}
-
-resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSServicePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.eks-cluster.name
-}
-
-resource "aws_security_group" "eks-cluster" {
-  name        = "arctiq-ext-mission-cluster"
-  description = "Cluster communication with worker nodes"
-  vpc_id      = aws_vpc.eks.id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "terraform-eks-eks"
-  }
-}
-
-resource "aws_security_group_rule" "eks-cluster-ingress-workstation-https" {
-  cidr_blocks       = [local.workstation-external-cidr]
-  description       = "Allow workstation to communicate with the cluster API Server"
-  from_port         = 443
-  protocol          = "tcp"
-  security_group_id = aws_security_group.eks-cluster.id
-  to_port           = 443
-  type              = "ingress"
-}
-
-resource "aws_eks_cluster" "eks" {
-  name     = var.eks_cluster_name
-  role_arn = aws_iam_role.eks-cluster.arn
-
-  vpc_config {
-    security_group_ids = [aws_security_group.eks-cluster.id]
-    subnet_ids         = aws_subnet.eks[*].id
-  }
-
-  depends_on = [
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSServicePolicy,
-  ]
-}
 
 #
 # EKS Worker Nodes Resources
@@ -192,11 +115,11 @@ resource "aws_iam_role_policy_attachment" "eks-node-AmazonEC2ContainerRegistryRe
   role       = aws_iam_role.eks-node.name
 }
 
-resource "aws_eks_node_group" "eks" {
-  cluster_name    = aws_eks_cluster.eks.name
-  node_group_name = "eks"
+resource "aws_eks_node_group" "demo" {
+  cluster_name    = aws_eks_cluster.demo.name
+  node_group_name = "minions"
   node_role_arn   = aws_iam_role.eks-node.arn
-  subnet_ids      = aws_subnet.eks[*].id
+  subnet_ids      = aws_subnet.demo[*].id
   instance_types  = ["t2.small"]
 
   scaling_config {
@@ -209,6 +132,85 @@ resource "aws_eks_node_group" "eks" {
     aws_iam_role_policy_attachment.eks-node-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.eks-node-AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.eks-node-AmazonEC2ContainerRegistryReadOnly,
+  ]
+}
+
+
+#
+# EKS Cluster Resources
+#  * IAM Role to allow EKS service to manage other AWS services
+#  * EC2 Security Group to allow networking traffic with EKS cluster
+#  * EKS Cluster
+#
+
+resource "aws_iam_role" "eks-cluster" {
+  name = "arctiq-ext-mission-cluster-role"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSClusterPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.eks-cluster.name
+}
+
+resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSServicePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  role       = aws_iam_role.eks-cluster.name
+}
+
+resource "aws_security_group" "eks-cluster" {
+  name        = "arctiq-ext-mission-cluster"
+  description = "Cluster communication with worker nodes"
+  vpc_id      = aws_vpc.demo.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "terraform-eks-demo"
+  }
+}
+
+resource "aws_security_group_rule" "demo-cluster-ingress-workstation-https" {
+  cidr_blocks       = [local.workstation-external-cidr]
+  description       = "Allow workstation to communicate with the cluster API Server"
+  from_port         = 443
+  protocol          = "tcp"
+  security_group_id = aws_security_group.eks-cluster.id
+  to_port           = 443
+  type              = "ingress"
+}
+
+resource "aws_eks_cluster" "demo" {
+  name     = var.eks_cluster_name
+  role_arn = aws_iam_role.eks-cluster.arn
+
+  vpc_config {
+    security_group_ids = [aws_security_group.eks-cluster.id]
+    subnet_ids         = aws_subnet.demo[*].id
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSServicePolicy,
   ]
 }
 

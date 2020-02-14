@@ -1,0 +1,236 @@
+# Source: external-dns/templates/secret.yaml
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedSecret
+metadata:
+  name: external-dns-global
+  namespace: global
+spec:
+  placement:
+    clusters:
+    - name: cluster-federation-aws
+    - name: cluster-federation-azure
+    - name: cluster-federation-gcp
+  template:
+    metadata:
+      name: external-dns-global
+      labels: 
+        app.kubernetes.io/name: external-dns
+    type: Opaque
+    data:
+      credentials: "xxx"
+      config: "xxx"
+---
+# Source: external-dns/templates/serviceaccount.yaml
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedServiceAccount
+metadata:
+  name: external-dns-global
+  namespace: global
+spec:
+  placement:
+    clusters:
+    - name: cluster-federation-aws
+    - name: cluster-federation-azure
+    - name: cluster-federation-gcp
+  template:
+    metadata:
+      name: external-dns-global
+      labels: 
+        app.kubernetes.io/name: external-dns
+---
+# Source: external-dns/templates/clusterrole.yaml
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedClusterRole
+metadata:
+  name: external-dns-global
+  namespace: global
+spec:
+  placement:
+    clusters:
+    - name: cluster-federation-aws
+    - name: cluster-federation-azure
+    - name: cluster-federation-gcp
+  template:
+    metadata:
+      name: external-dns-global
+      labels: 
+        app.kubernetes.io/name: external-dns
+    rules:
+    - apiGroups:
+      - ""
+      resources:
+      - services
+      - pods
+      - nodes
+      verbs:
+      - get
+      - list
+      - watch
+    - apiGroups:
+      - extensions
+      - "networking.k8s.io" # k8s 1.14+
+      resources:
+      - ingresses
+      verbs:
+      - get
+      - list
+      - watch
+    - apiGroups:
+      - networking.istio.io
+      resources:
+      - gateways
+      verbs:
+      - get
+      - list
+      - watch
+---
+# Source: external-dns/templates/clusterrolebinding.yaml
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedClusterRoleBinding
+metadata:
+  name: external-dns-global
+  namespace: global
+spec:
+  placement:
+    clusters:
+    - name: cluster-federation-aws
+    - name: cluster-federation-azure
+    - name: cluster-federation-gcp
+  template:
+    metadata:
+      name: external-dns-global
+      labels: 
+        app.kubernetes.io/name: external-dns
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: external-dns-global
+    subjects:
+    - kind: ServiceAccount
+      name: external-dns-global
+      namespace: default
+---
+# Source: external-dns/templates/service.yaml
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedService
+metadata:
+  name: external-dns-global
+  namespace: global
+spec:
+  placement:
+    clusters:
+    - name: cluster-federation-aws
+    - name: cluster-federation-azure
+    - name: cluster-federation-gcp
+  template:
+    metadata:
+      name: external-dns-global
+      labels: 
+        app.kubernetes.io/name: external-dns
+    spec:
+      ports:
+      - name: http
+        port: 7979
+        protocol: TCP
+        targetPort: http
+      selector: 
+          app.kubernetes.io/name: external-dns
+          app.kubernetes.io/instance: external-dns-global
+      type: ClusterIP
+---
+# Source: external-dns/templates/deployment.yaml
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: external-dns-global
+  namespace: global
+spec:
+  placement:
+    clusters:
+    - name: cluster-federation-aws
+    - name: cluster-federation-azure
+    - name: cluster-federation-gcp
+  template:
+    metadata:
+      name: external-dns-global
+      labels: 
+        app.kubernetes.io/name: external-dns
+    spec:
+      replicas: 1
+      selector:
+        matchLabels: 
+          app.kubernetes.io/name: external-dns
+          app.kubernetes.io/instance: external-dns-global
+      template:
+        metadata:
+          labels: 
+            app.kubernetes.io/name: external-dns
+            helm.sh/chart: external-dns-2.16.3
+            app.kubernetes.io/instance: external-dns-global
+            app.kubernetes.io/managed-by: Tiller
+          annotations:
+            checksum/secret: 6df7d1da66b82b1a9c0263e2c675c3735c56f2c8487056472fc2ce4e88e2bda4
+        spec:      
+          securityContext: 
+            fsGroup: 1001
+            runAsUser: 1001
+            
+          serviceAccountName: external-dns-global
+          containers:
+          - name: external-dns
+            image: "docker.io/bitnami/external-dns:0.5.18"
+            imagePullPolicy: "IfNotPresent"
+            args:
+            # Generic arguments
+            - --log-level=info
+            - --log-format=text
+            - --domain-filter=global.earlyfrench.ca
+            - --policy=sync
+            - --provider=aws
+            - --registry=txt
+            - --interval=1m
+            - --txt-owner-id=ZR42SNG7WXR4K
+            - --source=service
+            - --source=ingress
+            # AWS arguments
+            - --aws-zone-type=public
+            - --aws-batch-change-size=1000
+            env:
+            # AWS environment variables
+            - name: AWS_DEFAULT_REGION
+              value: sa-east-1
+            - name: AWS_SHARED_CREDENTIALS_FILE
+              value: /.aws/credentials
+            ports:
+            - name: http
+              containerPort: 7979
+            readinessProbe: 
+              failureThreshold: 6
+              httpGet:
+                path: /healthz
+                port: http
+              initialDelaySeconds: 5
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 5
+              
+            livenessProbe: 
+              failureThreshold: 2
+              httpGet:
+                path: /healthz
+                port: http
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 5
+              
+            volumeMounts:
+            # AWS mountPath(s)
+            - name: aws-credentials
+              mountPath: /.aws
+              readOnly: true
+          volumes:
+          # AWS volume(s)
+          - name: aws-credentials
+            secret:
+              secretName: external-dns-global
