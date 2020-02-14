@@ -1,7 +1,10 @@
 app/data
 **/.terraform
 **/plan.out
-secrets/
+secrets/account.json
+secrets/aws-external-dns.conf
+secrets/init_env.sh
+secrets/account.json
 .kube_config_*
 terraform/google-cloud-sdk
 *terraform.tfstate*
