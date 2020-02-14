@@ -41,12 +41,20 @@ remove-federation-members: ## Remove all federation members
 	kubefedctl unjoin cluster-federation-aws --cluster-context arctiq-ext-mission-aws --host-cluster-context $(FEDERATION_HOST) -v 2
 	kubefedctl unjoin cluster-federation-gcp --cluster-context arctiq-ext-mission-gcp --host-cluster-context $(FEDERATION_HOST) -v 2
 
+##@ Services
 install-external-dns:  ## Install external dns
 	kubectl apply -f external-dns/external-dns-federated.yml
-	bash external-dns/install_federated_secret.sh
+	bash external-dns/update_federated_secrets.sh
 
 remove-external-dns:  ## Install external dns
 	kubectl delete -f external-dns/external-dns-federated.yml
+
+install-rocketchat:  ## Install Rocketchat
+	kubectl apply -f rocketchat/rocketchat.yml
+	bash rocketchat/update_secrets.sh
+
+remove-rocketchat:  ## Install Rocketchat
+	kubectl delete -f rocketchat/rocketchat.yml
 
 install-docker-secret: ## Install local docker secrets
 	kubectl --context arctiq-ext-mission-aws create secret docker-registry regcred --docker-server=docker.pkg.github.com --docker-username=$(GITHUB_USERNAME) --docker-password=$(GITHUB_PACKAGE_ACCESS_TOKEN) --docker-email=$(GITHUB_EMAIL) -n global
@@ -57,7 +65,7 @@ remove-docker-secret: ## Install local docker secrets
 	kubectl --context arctiq-ext-mission-aws delete secret regcred -n global
 	kubectl --context arctiq-ext-mission-azure delete secret regcred -n global
 	kubectl --context arctiq-ext-mission-gcp delete secret regcred -n global
-   
+
 ##@ Application
 deploy:  ## Deploy the guestbook across all clusters
 	kubectl apply -f guestbook-go/guestbook-federated.yml

@@ -148,8 +148,14 @@ What is the best layout for terraform
 
 -- Take away --
 responsivity: GCP > AWS > Azure
+Routing via Route53 is not very advanced
 
+-- What to improve --
+Use the right tools for the job (more helm of terraform?)
+Find a way to synchronize states between clusters
+Find a tool to manage the loadbalancing at a higher level
 
+-- 
 References:
 https://learn.hashicorp.com/terraform/aws/eks-intro
 https://docs.microsoft.com/en-us/azure/terraform/terraform-create-k8s-cluster-with-tf-and-aks

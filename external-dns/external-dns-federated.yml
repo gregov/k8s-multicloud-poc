@@ -166,8 +166,6 @@ spec:
           labels: 
             app.kubernetes.io/name: external-dns
             app.kubernetes.io/instance: external-dns-global
-          annotations:
-            checksum/secret: 6df7d1da66b82b1a9c0263e2c675c3735c56f2c8487056472fc2ce4e88e2bda4
         spec:      
           securityContext: 
             fsGroup: 1001
@@ -183,11 +181,11 @@ spec:
             - --log-level=info
             - --log-format=text
             - --domain-filter=global.earlyfrench.ca
-            - --policy=sync
+            - --policy=upsert-only # To use sync would require a different owner id by cluster
             - --provider=aws
             - --registry=txt
             - --interval=1m
-            - --txt-owner-id=ZR42SNG7WXR4K
+            - --txt-owner-id=external-dns
             - --source=service
             - --source=ingress
             # AWS arguments
