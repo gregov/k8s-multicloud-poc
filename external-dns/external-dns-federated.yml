@@ -108,7 +108,7 @@ spec:
     subjects:
     - kind: ServiceAccount
       name: external-dns-global
-      namespace: default
+      namespace: global
 ---
 # Source: external-dns/templates/service.yaml
 apiVersion: types.kubefed.io/v1beta1
@@ -165,9 +165,7 @@ spec:
         metadata:
           labels: 
             app.kubernetes.io/name: external-dns
-            helm.sh/chart: external-dns-2.16.3
             app.kubernetes.io/instance: external-dns-global
-            app.kubernetes.io/managed-by: Tiller
           annotations:
             checksum/secret: 6df7d1da66b82b1a9c0263e2c675c3735c56f2c8487056472fc2ce4e88e2bda4
         spec:      
