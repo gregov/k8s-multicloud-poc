@@ -34,7 +34,8 @@ brew link --force helm@2
 helm init --service-account tiller
 ```
 
-
+c. ktmpl
+brew install ktmpl
 
 kubectl get federatedsecret external-dns-global -n global -o json | jq jq --arg ZZZZ $creds '.metadata.spec.template.data.credentials |= $creds'
 
@@ -144,7 +145,7 @@ clusterrolebindings is not federated by default (known bug)
 Questions:
 How to create a persistant storage cross-cloud ?
 What is the best layout for terraform
-
+Maybe use statefulset instead of deployment ?
 
 -- Take away --
 responsivity: GCP > AWS > Azure
@@ -167,4 +168,11 @@ https://github.com/kubernetes-sigs/kubefed/blob/master/docs/userguide.md
 https://www.nickaws.net/aws/elixir/2019/09/02/Federation-and-EKS.html
 https://www.katacoda.com/openshift/courses/introduction/federated-clusters
 https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/
-
+https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-values-geo.html
+https://rocket.chat/docs/bots/running-a-hubot-bot/
+https://www.linuxschoolonline.com/manage-your-kubernetes-cluster-through-slack/
+https://github.com/dotariel/kubot
+https://github.com/pavel-kazhavets/AlertmanagerRocketChat
+https://www.arctiq.ca/our-blog/2019/7/29/rocketchat/
+https://github.com/kevinschmidt/hubot-k8s
+https://github.com/RocketChat/rasa-kick-starter/blob/master/scripts/bot_config.py

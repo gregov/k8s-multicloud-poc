@@ -3,28 +3,32 @@ README.md
 To setup the clusters, use the Makefile
 
 ```
+
 Usage:
   make <target>
 
 Creation
-  create-aws-cluster  Create EKS on AWS
-  create-azure-cluster  Create AKS on Azure
-  create-gcp-cluster  Create GKS on GCP
-  create-all-clusters  Create all clustes
+  create-clusters  Create the 3 clusters
 
 Federation
   federation-host  Initialise the federation host
   add-federation-members  Add all federation members
   remove-federation-members  Remove all federation members
 
+Services
+  install-external-dns  Install external dns
+  remove-external-dns  Install external dns
+  install-docker-secret  Install local docker secrets
+  remove-docker-secret  Install local docker secrets
+
 Application
-  deploy           Deploy the guestbook across all clusters
+  deploy-rocketchat  Install Rocketchat
+  undeploy-rocketchat  Uninstall Rocketchat
+  deploy-guestbook  Deploy the guestbook across all clusters
+  undeploy-guestbook  Uninstall the guestbook across all clusters
 
 Destructions
-  destroy-aws-cluster  Destroy AWS cluster
-  destroy-azure-cluster  Destroy Azure cluster
-  destroy-gcp-cluster  Destroy GCP cluster
-  destroy-all-clusters  Destroy all clustes
+  destroy-clusters  Destroy clusters
 
 Helpers
   help             Display this help
