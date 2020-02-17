@@ -120,10 +120,10 @@ resource "aws_eks_node_group" "demo" {
   node_group_name = "minions"
   node_role_arn   = aws_iam_role.eks-node.arn
   subnet_ids      = aws_subnet.demo[*].id
-  instance_types  = ["t2.small"]
+  instance_types  = ["t2.micro"]
 
   scaling_config {
-    desired_size = 3
+    desired_size = 1
     max_size     = 3
     min_size     = 1
   }

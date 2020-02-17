@@ -1,4 +1,36 @@
 cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: deployment-manager
+  namespace: rocketchat
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: rocketchat
+  name: deployment-manager
+rules:
+- apiGroups: ["", "extensions", "apps", "types.kubefed.io"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # You can also use ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: deployment-manager
+  namespace: rocketchat
+roleRef:
+  kind: ClusterRole
+  name: deployment-manager
+  apiGroup: ""
+subjects:
+  - kind: ServiceAccount
+    name: deployment-manager
+    namespace: kube-system
+EOF
+
+cat <<EOF2 | kubectl apply -f -
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -17,6 +49,7 @@ spec:
       labels:
         app.kubernetes.io/name: hubot-rocketchat
     spec:
+      # serviceAccountName: deployment-manager
       containers:
       - image: rocketchat/hubot-rocketchat
         name: hubot-rocketchat
@@ -38,5 +71,5 @@ spec:
         - name: HUBOT_LOG_LEVEL
           value: debug
         - name: EXTERNAL_SCRIPTS
-          value: hubot-help,hubot-seen,hubot-links,hubot-diagnostics,hubot-google,hubot-reddit,hubot-bofh,hubot-bookmark,hubot-shipit,hubot-maps
-EOF
+          value: hubot-help,hubot-kubernetes,hubot-bofh
+EOF2

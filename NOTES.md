@@ -141,6 +141,8 @@ aws vpc cannot be deleted
 -> need to undeploy (delete the ELB) before destroying the cluster
 clusterrolebindings is not federated by default (known bug)
 -> need to enable it manually
+cannot get extraEnv passed via the commandline for stable/rocketchat
+-> copy and modify a local chart
 
 Questions:
 How to create a persistant storage cross-cloud ?

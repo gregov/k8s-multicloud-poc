@@ -4,7 +4,7 @@ SHELL:=/usr/bin/env bash
 GCP_REGION=australia-southeast1
 AWS_REGION=sa-east-1
 PROJECT_NAME=arctiq-ext-mission
-FEDERATION_HOST=aws
+FEDERATION_HOST=gcp
 FEDERATION_MEMBERS=aws gcp azure
 
 ##@ Creation
@@ -38,20 +38,20 @@ federation-host:  ## Initialise the federation host
 
 .PHONY: add-federation-members
 add-federation-members:  ## Add all federation members
-	for cluster in $(FEDERATION_MEMBERS); do
-		kubefedctl join cluster-federation-$(cluster) --cluster-context $(PROJECT_NAME)-$(cluster) \
-	--host-cluster-context $(PROJECT_NAME)-$(FEDERATION_HOST) -v 2
+	for cluster in $(FEDERATION_MEMBERS); do\
+		kubefedctl join cluster-federation-$$cluster --cluster-context $(PROJECT_NAME)-$$cluster \
+	--host-cluster-context $(PROJECT_NAME)-$(FEDERATION_HOST) -v 2 ;\
 	done
 
 .PHONY: remove-federation-members
 remove-federation-members:  ## Remove all federation members
-	for cluster in $(FEDERATION_MEMBERS); do
-		kubefedctl unjoin cluster-federation-$(cluster) --cluster-context $(PROJECT_NAME)-$(cluster) \
-	--host-cluster-context $(PROJECT_NAME)-$(FEDERATION_HOST) -v 2
+	for cluster in $(FEDERATION_MEMBERS); do\
+		kubefedctl unjoin cluster-federation-$$cluster --cluster-context $(PROJECT_NAME)-$$cluster \
+	--host-cluster-context $(PROJECT_NAME)-$(FEDERATION_HOST) -v 2 ;\
 	done
 
 .PHONY: configure-clusters
-configure-clusters: federation-host add-federation-members install-external-dns  ## Configure the federation and dns
+configure-clusters: federation-host add-federation-members install-external-dns install-docker-secret ## Configure the federation and dns
 
 
 ##@ Services
@@ -67,24 +67,24 @@ remove-external-dns:  ## Install external dns
 
 .PHONY: install-docker-secret
 install-docker-secret:  ## Install local docker secrets
-	for cluster in $(FEDERATION_MEMBERS); do
-		kubectl --context $(PROJECT_NAME)-$(cluster) create secret docker-registry regcred \
+	for cluster in $(FEDERATION_MEMBERS); do\
+		kubectl --context $(PROJECT_NAME)-$$cluster create secret docker-registry regcred \
 	--docker-server=docker.pkg.github.com --docker-username=$(GITHUB_USERNAME) \
-	--docker-password=$(GITHUB_PACKAGE_ACCESS_TOKEN) --docker-email=$(GITHUB_EMAIL) -n global
+	--docker-password=$(GITHUB_PACKAGE_ACCESS_TOKEN) --docker-email=$(GITHUB_EMAIL) -n global ;\
 	done
 
 .PHONY: remove-docker-secret
 remove-docker-secret:  ## Install local docker secrets
-	for cluster in $(FEDERATION_MEMBERS); do
-		kubectl --context $(PROJECT_NAME)-aws delete secret regcred -n global
+	for cluster in $(FEDERATION_MEMBERS); do\
+		kubectl --context $(PROJECT_NAME)-aws delete secret regcred -n global ;\
 	done
 
 ##@ Application
 .PHONY: deploy-rocketchat
 deploy-rocketchat:  ## Install Rocketchat
-	helm install stable/rocketchat --name rocketchat --namespace rocketchat  --values rocketchat/rocketchat.values.yml \
-	--set extraEnv="- name: ADMIN_USERNAME \n    value: admin\n  - name: ADMIN_PASS\n    value: $(ROCKETCHAT_PASSWORD)" \
-	--set mongodbRootPassword=$(ROCKETCHAT_MONGO_ROOTPASSWORD) --mongodbPassword=$(ROCKETCHAT_MONGO_PASSWORD) --wait
+	bash rocketchat/rocketchat_config.sh
+	helm install stable/rocketchat -n rocketchat --namespace rocketchat --values=rocketchat_values.yml --wait
+	rm rocketchat_values.yml
 	bash rocketchat/create_user.sh
 	bash rocketchat/install_hubot.sh
 

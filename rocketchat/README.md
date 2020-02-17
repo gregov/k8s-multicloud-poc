@@ -9,3 +9,6 @@ helm install stable/rocketchat --name rocketchat --namespace rocketchat --values
 bash rocketchat/create_user.sh
 bash rocketchat/install_hubot.sh
 ```
+
+
+kubectl set image deployment/nginx-deployment nginx=nginx:1.9.1 --record
