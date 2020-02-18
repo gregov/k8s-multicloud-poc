@@ -2,11 +2,9 @@ README.md
 
 ![Architecture Overview](arctiq-ext-mission.png)
 
-
 To setup the clusters, use the Makefile
 
 ```
-
 Usage:
   make <target>
 
@@ -14,7 +12,9 @@ Creation
   create-clusters  Create the 3 clusters
 
 Federation
-  federation-host  Initialise the federation host
+  configure-clusters  Configure the federation, dns and secrets
+  install-federation-host  Install the federation host
+  remove-federation-host  Uninstall the federation host
   add-federation-members  Add all federation members
   remove-federation-members  Remove all federation members
 
@@ -32,6 +32,9 @@ Application
 
 Destructions
   destroy-clusters  Destroy clusters
+
+Utils
+  flush-dns-cache  Flush dns cache
 
 Helpers
   help             Display this help
