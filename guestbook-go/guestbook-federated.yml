@@ -139,7 +139,7 @@ kind: FederatedDeployment
 metadata:
   labels:
     app: guestbook
-    version: 21
+    version: 1
   name: guestbook
   namespace: global
 spec:
@@ -152,23 +152,23 @@ spec:
     metadata:
       labels:
         app: guestbook
-        version: 21
+        version: 1
     spec:
       replicas: 3
       selector:
         matchLabels:
           app: guestbook
-          version: 21
+          version: 1
       template:
         metadata:
           labels:
             app: guestbook
-            version: 21
+            version: 1
         spec:
           imagePullSecrets:
           - name: regcred
           containers:
-          - image: docker.pkg.github.com/gregov/arctiq-ext-mission/guestbook-go:21
+          - image: docker.pkg.github.com/gregov/arctiq-ext-mission/guestbook-go:1
             name: guestbook
             ports:
             - containerPort: 3000
@@ -202,7 +202,7 @@ spec:
         targetPort: http-server
       selector:
         app: guestbook
-        version: 21
+        version: 1
       type: LoadBalancer
   overrides:
     - clusterName: cluster-federation-aws

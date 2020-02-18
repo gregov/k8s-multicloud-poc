@@ -27,7 +27,8 @@ module.exports = (robot) ->
     options =
         rejectUnauthorized: false
     robot.http("https://kubernetes.default/apis/types.kubefed.io/v1beta1/namespaces/global/federateddeployments", options)
-    .header('Authorization', "Bearer #{token}")
+    .header("Authorization", "Bearer #{token}")
+    .header("Content-Type", "application/json")
     .get() (error, response, body) ->
       if error
         robot.logger.error error
@@ -41,7 +42,7 @@ module.exports = (robot) ->
           console.log(rc.status)
           labels = JSON.stringify rc.metadata.labels
           image = rc.spec.template.spec.template.spec.containers[0].image
-          if rc.status.conditions 
+          if rc.status.conditions? 
             status = rc.status.conditions[0].status 
           else 
             status = "Pending"
@@ -102,7 +103,8 @@ module.exports = (robot) ->
     options =
         rejectUnauthorized: false
     robot.http("https://kubernetes.default/apis/types.kubefed.io/v1beta1/namespaces/global/federateddeployments", options)
-    .header('Authorization', "Bearer #{token}")
+    .header("Authorization", "Bearer #{token}")
+    .header("Content-Type", "application/json")
     .post(JSON.stringify payload) (error, response, body) ->
       if error
         robot.logger.error error
@@ -116,7 +118,8 @@ module.exports = (robot) ->
     options =
         rejectUnauthorized: false
     robot.http("https://kubernetes.default/apis/types.kubefed.io/v1beta1/namespaces/global/federatedservices/guestbook", options)
-    .header('Authorization', "Bearer #{token}")
+    .header("Authorization", "Bearer #{token}")
+    .header("Content-Type", "application/json")
     .get() (error, response, body) ->
       if error
         robot.logger.error error
@@ -129,12 +132,13 @@ module.exports = (robot) ->
   robot.respond /guestbook enable (\d+)/i, (res) ->
     if res.match[1] and res.match[1] != ""
       version = res.match[1]
-    payload = {"spec":{"template":{"spec":{"selector": {"app": "guestbook", "version": version} }}}}
+    payload = [{"op": "replace", "path": "/spec/template/spec/selector/version", "value":version}]
     options =
         rejectUnauthorized: false
-    console.log(payload)
+    console.log(JSON.stringify payload)
     robot.http("https://kubernetes.default/apis/types.kubefed.io/v1beta1/namespaces/global/federatedservices/guestbook", options)
-    .header('Authorization', "Bearer #{token}")
+    .header("Authorization", "Bearer #{token}")
+    .header("Content-Type", "application/json")
     .patch(JSON.stringify payload) (error, response, body) ->
       if error
         robot.logger.error error
@@ -147,11 +151,11 @@ module.exports = (robot) ->
   robot.respond /guestbook delete (\d+)/i, (res) ->
     if res.match[1] and res.match[1] != ""
       version = res.match[1]
-    payload = {"spec":{"template":{"spec":{"selector": {"app": "guestbook", "version": version} }}}}
     options =
       rejectUnauthorized: false
     robot.http("https://kubernetes.default/apis/types.kubefed.io/v1beta1/namespaces/global/federateddeployments/guestbook-#{version}", options)
-    .header('Authorization', "Bearer #{token}")
+    .header("Authorization", "Bearer #{token}")
+    .header("Content-Type", "application/json")
     .delete() (error, response, body) ->
       if error
         robot.logger.error error
