@@ -33,13 +33,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
         client_secret = var.client_secret
     }
 
-    # addon_profile {
-    #     oms_agent {
-    #         enabled                    = true
-    #         log_analytics_workspace_id = azurerm_log_analytics_workspace.test.id
-    #     }
-    # }
-
     tags = {
         Environment = "Demo"
     }

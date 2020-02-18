@@ -34,47 +34,27 @@ brew link --force helm@2
 helm init --service-account tiller
 ```
 
-c. ktmpl
-brew install ktmpl
-
-kubectl get federatedsecret external-dns-global -n global -o json | jq jq --arg ZZZZ $creds '.metadata.spec.template.data.credentials |= $creds'
-
-
-# Create a secret with several keys
-
-
-6. Installing a federation
-
-7. The application
-
-```
-pipenv install flask
-
-```
-
-8. Create domain name (subdomain)
+1. Create domain name (subdomain)
 ```
 global.earlyfrench.ca
 ```
 -> Route53
 
-10. setting up a git repository
+
+2. setting up a git repository
 git remote add  github https://github.com/gregov/arctiq-ext-mission.git
 
 
 
 TODO:
 
-0. Install an ingress
+0. Install an ingress for the deployments
 
-1. Refine the github action to leverage the releases
+1. Add a cluster scaling service
 
-2. Use Route53 to perform a global load balancing
-	-> try to use externalDNS
+2. Write a Helm 3 chart for kubefed
 
-3. Automate deployment and set up a chat-ops 
-
-4. Add a cluster scaling service
+3. Use more terraform
 
 
 Feedback:
@@ -123,7 +103,7 @@ kubefed-charts/kubefed is not compatible with Helm3
 -> pinned to v2
 tiller pod is taking forever to launch 
 -> I had a single node
-kubefed unistall is buggy
+kubefed uninstall is buggy
 -> there is an additional manual step to take
 github actions docker push fails
 -> you need to have a personal token setup (and it's not documented)
@@ -142,7 +122,7 @@ aws vpc cannot be deleted
 clusterrolebindings is not federated by default (known bug)
 -> need to enable it manually
 cannot get extraEnv passed via the commandline for stable/rocketchat
--> copy and modify a local chart
+-> generate a local values.yml
 
 Questions:
 How to create a persistant storage cross-cloud ?

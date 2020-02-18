@@ -27,21 +27,3 @@ variable resource_group_name {
 variable aks_location {
     default = "Canada Central"
 }
-
-# variable region {
-#     default = "canadacentral"
-# }
-
-# variable log_analytics_workspace_name {
-#     default = "testLogAnalyticsWorkspaceName"
-# }
-
-# # refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
-# variable log_analytics_workspace_location {
-#     default = "canadacentral"
-# }
-
-# # refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing 
-# variable log_analytics_workspace_sku {
-#     default = "PerGB2018"
-# }
