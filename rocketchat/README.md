@@ -10,5 +10,10 @@ bash rocketchat/create_user.sh
 bash rocketchat/install_hubot.sh
 ```
 
+Bot coding hint: 
+```
+PODNAME=$(kubectl get pods --namespace rocketchat -l "app.kubernetes.io/name=hubot-rocketchat" -o jsonpath='{ .items[0].metadata.name }')
+kubectl cp rocketchat/k8sfederation.coffee rocketchat/$PODNAME:/home/hubot/scripts/k8sfederation.coffee
+```
 
-kubectl set image deployment/nginx-deployment nginx=nginx:1.9.1 --record
+then say "hubot reload" in Rocketchat

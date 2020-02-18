@@ -8,26 +8,24 @@ metadata:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  namespace: rocketchat
   name: deployment-manager
 rules:
-- apiGroups: ["", "extensions", "apps", "types.kubefed.io"]
-  resources: ["*"]
-  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # You can also use ["*"]
+- apiGroups: ["types.kubefed.io"]
+  resources: ["federateddeployments", "federatedservices"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: deployment-manager
-  namespace: rocketchat
 roleRef:
   kind: ClusterRole
   name: deployment-manager
   apiGroup: ""
 subjects:
   - kind: ServiceAccount
-    name: deployment-manager
-    namespace: kube-system
+    name: deployment-manager    
+    namespace: rocketchat
 EOF
 
 cat <<EOF2 | kubectl apply -f -
@@ -49,7 +47,7 @@ spec:
       labels:
         app.kubernetes.io/name: hubot-rocketchat
     spec:
-      # serviceAccountName: deployment-manager
+      serviceAccountName: deployment-manager
       containers:
       - image: rocketchat/hubot-rocketchat
         name: hubot-rocketchat
@@ -71,5 +69,13 @@ spec:
         - name: HUBOT_LOG_LEVEL
           value: debug
         - name: EXTERNAL_SCRIPTS
-          value: hubot-help,hubot-kubernetes,hubot-bofh
+          value: hubot-help,hubot-bofh,hubot-reload-scripts
 EOF2
+
+echo "Waiting for Hubot pod to be in a ready state"
+while [[ $(kubectl get pods --namespace rocketchat -l "app.kubernetes.io/name=hubot-rocketchat" -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do 
+  echo -n "." && sleep 3
+done
+
+PODNAME=$(kubectl get pods --namespace rocketchat -l "app.kubernetes.io/name=hubot-rocketchat" -o jsonpath='{ .items[0].metadata.name }')
+kubectl cp rocketchat/k8sfederation.coffee rocketchat/$PODNAME:/home/hubot/scripts/k8sfederation.coffee

@@ -1,6 +1,9 @@
 body, input {
-  color: #123;
-  font-family: "Gill Sans", sans-serif;
+  font-size: 18px !important;
+  background-color: rgba(245,245,245,1);
+  color: rgb(24,54,105);
+  -webkit-font-smoothing: antialiased;
+  font-family:'Montserrat', Georgia, sans-serif !important;
 }
 
 div {

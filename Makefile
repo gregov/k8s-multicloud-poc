@@ -26,8 +26,11 @@ create-clusters:  ## Create the 3 clusters
 	KUBECONFIG=.kube_config_aws:.kube_config_azure:.kube_config_gcp kubectl config view --raw > ~/.kube/config
 
 ##@ Federation
-.PHONY: federation-host
-federation-host:  ## Initialise the federation host
+.PHONY: configure-clusters
+configure-clusters: install-federation-host add-federation-members install-external-dns install-docker-secret ## Configure the federation, dns and secrets
+
+.PHONY: install-federation-host
+install-federation-host:  ## Install the federation host
 	kubectl config use-context $(PROJECT_NAME)-$(FEDERATION_HOST)
 	kubectl apply -f kubefed/tiller-rbac.yml
 	helm init --service-account tiller --wait
@@ -35,6 +38,18 @@ federation-host:  ## Initialise the federation host
 	helm repo update
 	helm install  kubefed-charts/kubefed --name kubefed --version=v0.1.0-rc6 --namespace kube-federation-system --wait
 	kubectl apply -f kubefed/federated-namespace.yml
+
+.PHONY: remove-federation-host
+remove-federation-host:  ## Uninstall the federation host
+	kubectl config use-context $(PROJECT_NAME)-$(FEDERATION_HOST)
+	kubectl delete -f kubefed/federated-namespace.yml
+	# See https://github.com/kubernetes-sigs/kubefed/tree/master/charts/kubefed#uninstalling-the-chart
+	kubectl -n kube-federation-system delete FederatedTypeConfig --all
+	kubectl delete crd $(kubectl get crd | grep -E 'kubefed.io' | awk '{print $1}')
+	helm del --purge kubefed
+	helm repo remove kubefed-charts
+	helm reset
+	kubectl delete -f kubefed/tiller-rbac.yml
 
 .PHONY: add-federation-members
 add-federation-members:  ## Add all federation members
@@ -50,10 +65,6 @@ remove-federation-members:  ## Remove all federation members
 	--host-cluster-context $(PROJECT_NAME)-$(FEDERATION_HOST) -v 2 ;\
 	done
 
-.PHONY: configure-clusters
-configure-clusters: federation-host add-federation-members install-external-dns install-docker-secret ## Configure the federation and dns
-
-
 ##@ Services
 .PHONY: install-external-dns
 install-external-dns:  ## Install external dns
@@ -67,7 +78,13 @@ remove-external-dns:  ## Install external dns
 
 .PHONY: install-docker-secret
 install-docker-secret:  ## Install local docker secrets
-	for cluster in $(FEDERATION_MEMBERS); do\
+	for cluster in $(FEDERATION_MEMBERS); do \
+	echo "Waiting on global namespace to be available on $$cluster"; \
+		while [[ ! $$(kubectl --context $(PROJECT_NAME)-$$cluster get namespace global) ]]; do \
+			echo -n "." && sleep 3; \
+		done; \
+	done
+	for cluster in $(FEDERATION_MEMBERS); do \
 		kubectl --context $(PROJECT_NAME)-$$cluster create secret docker-registry regcred \
 	--docker-server=docker.pkg.github.com --docker-username=$(GITHUB_USERNAME) \
 	--docker-password=$(GITHUB_PACKAGE_ACCESS_TOKEN) --docker-email=$(GITHUB_EMAIL) -n global ;\
@@ -75,8 +92,8 @@ install-docker-secret:  ## Install local docker secrets
 
 .PHONY: remove-docker-secret
 remove-docker-secret:  ## Install local docker secrets
-	for cluster in $(FEDERATION_MEMBERS); do\
-		kubectl --context $(PROJECT_NAME)-aws delete secret regcred -n global ;\
+	for cluster in $(FEDERATION_MEMBERS); do \
+		kubectl --context $(PROJECT_NAME)-$$cluster delete secret regcred -n global ;\
 	done
 
 ##@ Application

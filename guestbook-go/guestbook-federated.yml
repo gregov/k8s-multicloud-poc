@@ -139,6 +139,7 @@ kind: FederatedDeployment
 metadata:
   labels:
     app: guestbook
+    version: 21
   name: guestbook
   namespace: global
 spec:
@@ -151,15 +152,18 @@ spec:
     metadata:
       labels:
         app: guestbook
+        version: 21
     spec:
       replicas: 3
       selector:
         matchLabels:
           app: guestbook
+          version: 21
       template:
         metadata:
           labels:
             app: guestbook
+            version: 21
         spec:
           imagePullSecrets:
           - name: regcred
@@ -198,6 +202,7 @@ spec:
         targetPort: http-server
       selector:
         app: guestbook
+        version: 21
       type: LoadBalancer
   overrides:
     - clusterName: cluster-federation-aws
