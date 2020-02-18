@@ -45,7 +45,7 @@ remove-federation-host:  ## Uninstall the federation host
 	kubectl delete -f kubefed/federated-namespace.yml
 	# See https://github.com/kubernetes-sigs/kubefed/tree/master/charts/kubefed#uninstalling-the-chart
 	kubectl -n kube-federation-system delete FederatedTypeConfig --all
-	kubectl delete crd $(kubectl get crd | grep -E 'kubefed.io' | awk '{print $1}')
+	kubectl delete crd $(kubectl get crd | grep -E 'kubefed.io' | awk '{print $$1}')
 	helm del --purge kubefed
 	helm repo remove kubefed-charts
 	helm reset
