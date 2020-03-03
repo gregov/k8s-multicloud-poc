@@ -7,39 +7,38 @@ revealOptions:
     transition: 'slide'
 ---
 
-## Kubernetes Multicluster CICD
+## Kubernetes around the world
 
 Greg Reboul 2020
 
 -v-
-### What
-* IaC cluster provisionning
-* Using 3 major public clouds
-* Spread out deployment
-* Full modern CI/CD pipeline
+### Intro
+> With the democratization of Kubernetes on a highly competitive market for Cloud providers, more and more companies are looking to take advantage of a multi-cluster and multi-region platform in order to reduce cost and network latency.
 
+Today we will showcase it using open-source tools.
+-v-
+![World map](https://www.atomia.com/wp-content/uploads/2016/11/cloud-provider-location-map.png)
+(www.atomia.com 2016)
 
 -v-
-### //deployment
->Using Terraform, deploy two kubernetes clusters in two major cloud providers across two different global regions.
+### Milestones
+>Using Terraform, deploy multiple kubernetes clusters in major cloud providers across different global regions.
 
->Use Global Load Balancing to route traffic between the two clusters.
+>Use Global Load Balancing to route traffic between clusters.
 
->Deploy a stateful containerized application across both clusters.
+>Deploy a stateful containerized application across clusters.
 -v-
->Automate the deployment of the application using tools of your
-choice.
+>Automate the deployment of the application
 
 >Integrate the deployment pipeline operations into a chat-ops tool.
 
->Perform blue/green deployment of the application across both
-clusters.
+>Perform blue/green deployment of the application across clusters.
 
 -h-
 ## Overall solution
 
 -v-
-![Architecture Overview](arctiq-ext-mission.png)
+![Architecture Overview](https://raw.githubusercontent.com/gregov/k8s-multicloud-poc/master/highlevel.png)
 
 -h-
 ## Hybrid Cluster Setup
@@ -146,11 +145,19 @@ Redis is not synced across clusters, it would require an additional service
 ## Not done due to time constraints:
 
  > Use a real stateful app with persistant volumes
+
  > Install an ingress for the deployments
+ 
  > Add a cluster scaling service
+ 
  > Write a Helm 3 chart for kubefed
- > Use more terraform
+ 
+ -v-
+
+ > Terraform can do more
+ 
  > Improve the Hubot script to give real time feedback on deployments
+ 
  > Install kubernetes/dashboard & Prometheus
 -v-
 
@@ -174,4 +181,4 @@ Redis is not synced across clusters, it would require an additional service
 
 You can find the source code and this presentation at
 
-https://github.com/gregov/arctiq-ext-mission/
+https://github.com/gregov/k8s-multicluster-poc/

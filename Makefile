@@ -11,7 +11,7 @@ FEDERATION_MEMBERS=aws gcp azure
 .PHONY: create-clusters
 create-clusters:  ## Create the 3 clusters
 	cp ~/.kube/config ~/.kube/config.bak
-	rm .kube_config_*
+	rm .kube_config_* || true
 	cd terraform ;\
 	terraform init ;\
 	terraform apply -auto-approve ;\
