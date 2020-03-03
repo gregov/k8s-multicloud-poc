@@ -7,7 +7,9 @@ revealOptions:
     transition: 'slide'
 ---
 
-## Kubernetes around the world
+## Open-source and cloud-based software solution: Multi-cloud Kubernetes deployment
+---
+### Kubernetes around the world
 
 Greg Reboul 2020
 
@@ -181,4 +183,4 @@ Redis is not synced across clusters, it would require an additional service
 
 You can find the source code and this presentation at
 
-https://github.com/gregov/k8s-multicluster-poc/
+https://github.com/gregov/k8s-multicloud-poc/

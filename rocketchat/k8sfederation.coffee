@@ -87,7 +87,7 @@ module.exports = (robot) ->
               "spec": {
                 "containers": [
                   {
-                    "image": "docker.pkg.github.com/gregov/arctiq-ext-mission/guestbook-go:#{version}",
+                    "image": "docker.pkg.github.com/gregov/k8s-multicloud-poc/guestbook-go:#{version}",
                     "name": "guestbook-#{version}",
                     "ports": [{"containerPort": 3000, "name": "http-server"}]
                   }
