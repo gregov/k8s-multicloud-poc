@@ -9,7 +9,7 @@ kubectl delete -f guestbook-go/modified/guestbook-federated.yml
 ```
 
 
-# About the docker tocken
+# About the docker token
 
 A Personal access token has to be used as the password. 
 Permissions should be at least: repo/public_repo + read:packages
