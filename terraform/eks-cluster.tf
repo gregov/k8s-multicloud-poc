@@ -32,7 +32,7 @@ resource "aws_vpc" "demo" {
   cidr_block = "10.0.0.0/16"
 
   tags = map(
-    "Name", "arctiq-ext-mission-cluster",
+    "Name", "k8s-multicloud-poc-cluster",
     "kubernetes.io/cluster/${var.eks_cluster_name}", "shared",
   )
 }
@@ -45,7 +45,7 @@ resource "aws_subnet" "demo" {
   vpc_id            = aws_vpc.demo.id
 
   tags = map(
-    "Name", "arctiq-ext-mission-cluster",
+    "Name", "k8s-multicloud-poc-cluster",
     "kubernetes.io/cluster/${var.eks_cluster_name}", "shared",
   )
 }
@@ -54,7 +54,7 @@ resource "aws_internet_gateway" "demo" {
   vpc_id = aws_vpc.demo.id
 
   tags = {
-    Name = "arctiq-ext-mission-gateway"
+    Name = "k8s-multicloud-poc-gateway"
   }
 }
 
@@ -82,7 +82,7 @@ resource "aws_route_table_association" "demo" {
 #
 
 resource "aws_iam_role" "eks-node" {
-  name = "arctiq-ext-mission-cluster"
+  name = "k8s-multicloud-poc-cluster"
 
   assume_role_policy = <<POLICY
 {
@@ -144,7 +144,7 @@ resource "aws_eks_node_group" "demo" {
 #
 
 resource "aws_iam_role" "eks-cluster" {
-  name = "arctiq-ext-mission-cluster-role"
+  name = "k8s-multicloud-poc-cluster-role"
 
   assume_role_policy = <<POLICY
 {
@@ -173,7 +173,7 @@ resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSServicePolicy" {
 }
 
 resource "aws_security_group" "eks-cluster" {
-  name        = "arctiq-ext-mission-cluster"
+  name        = "k8s-multicloud-poc-cluster"
   description = "Cluster communication with worker nodes"
   vpc_id      = aws_vpc.demo.id
 

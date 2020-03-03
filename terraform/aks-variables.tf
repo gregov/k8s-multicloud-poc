@@ -13,15 +13,15 @@ variable "ssh_public_key" {
 }
 
 variable "dns_prefix" {
-    default = "arctiq-ext-mission"
+    default = "k8s-multicloud-poc"
 }
 
 variable aks_cluster_name {
-    default = "arctiq-ext-mission-azure"
+    default = "k8s-multicloud-poc-azure"
 }
 
 variable resource_group_name {
-    default = "azure-arctiq-ext-mission"
+    default = "azure-k8s-multicloud-poc"
 }
 
 variable aks_location {

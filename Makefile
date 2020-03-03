@@ -3,7 +3,7 @@ SHELL:=/usr/bin/env bash
 
 GCP_REGION=australia-southeast1
 AWS_REGION=sa-east-1
-PROJECT_NAME=arctiq-ext-mission
+PROJECT_NAME=k8s-multicloud-poc
 FEDERATION_HOST=gcp
 FEDERATION_MEMBERS=aws gcp azure
 
@@ -21,7 +21,7 @@ create-clusters:  ## Create the 3 clusters
 	bash terraform/fix-eks-kubectl-config.sh .kube_config_aws
 	# Kubeconfig for gcp
 	KUBECONFIG=.kube_config_gcp gcloud container clusters get-credentials $(PROJECT_NAME)-gcp --region $(GCP_REGION)
-	sed -i .bak s/gke_arctiq-ext-.*-ext-mission-gcp/$(PROJECT_NAME)-gcp/  .kube_config_gcp
+	sed -i .bak s/gke_k8s-multicloud-.*-multicloud-poc-gcp/$(PROJECT_NAME)-gcp/  .kube_config_gcp
 	# Merge all kubeconfigs
 	KUBECONFIG=.kube_config_aws:.kube_config_azure:.kube_config_gcp kubectl config view --raw > ~/.kube/config
 

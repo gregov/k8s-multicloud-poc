@@ -16,10 +16,10 @@ Permissions should be at least: repo/public_repo + read:packages
 
 
 ```
- kubectl --context arctiq-ext-mission-aws create secret docker-registry regcred --docker-server=docker.pkg.github.com --docker-username=$GITHUB_USERNAME --docker-password=$GITHUB_PACKAGE_ACCESS_TOKEN
+ kubectl --context k8s-multicluster-poc-aws create secret docker-registry regcred --docker-server=docker.pkg.github.com --docker-username=$GITHUB_USERNAME --docker-password=$GITHUB_PACKAGE_ACCESS_TOKEN
  
- kubectl --context arctiq-ext-mission-azure create secret docker-registry regcred --docker-server=docker.pkg.github.com --docker-username=$GITHUB_USERNAME --docker-password=$GITHUB_PACKAGE_ACCESS_TOKEN
+ kubectl --context k8s-multicluster-poc-azure create secret docker-registry regcred --docker-server=docker.pkg.github.com --docker-username=$GITHUB_USERNAME --docker-password=$GITHUB_PACKAGE_ACCESS_TOKEN
    
- kubectl --context arctiq-ext-mission-gcp create secret docker-registry regcred --docker-server=docker.pkg.github.com --docker-username=$GITHUB_USERNAME --docker-password=$GITHUB_PACKAGE_ACCESS_TOKEN
+ kubectl --context k8s-multicluster-poc-gcp create secret docker-registry regcred --docker-server=docker.pkg.github.com --docker-username=$GITHUB_USERNAME --docker-password=$GITHUB_PACKAGE_ACCESS_TOKEN
 ```
 kubectl create secret docker-registry regcred --docker-server=docker.pkg.github.com --docker-username=$GITHUB_USERNAME --docker-password=$GITHUB_PACKAGE_ACCESS_TOKEN

@@ -1,13 +1,13 @@
 variable "project" {
   type = string
   description = "Google Cloud project name"
-  default = "arctiq-ext-missi-1581512285377"
+  default = "k8s-multicloud-poc"
 }
 
 variable "gke_cluster_name" {
   type = string
   description = "Cluster name"
-  default = "arctiq-ext-mission-gcp"
+  default = "k8s-multicloud-poc-gcp"
 }
 
 variable "gke_region" {

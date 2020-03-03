@@ -41,31 +41,10 @@ aws iam attach-user-policy --user-name external-dns-global --policy-arn arn:aws:
 ```
 
 
-## clusterrolebindings is not federated by default (known bug)
-https://github.com/kubernetes-sigs/kubefed/pull/1162
-kubefedctl enable clusterrolebindings.rbac.authorization.k8s.io
-
-
-## install the secret
-
-## deploy the federated manifest
-
-```
-
 ## Details on the routing
 
 https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-values-geo.html
 
-
-## To delete external-dns
-```
-kubectl config use-context arctiq-ext-mission-azure
-kubectl delete -f secrets/external-dns-azure.yml
-kubectl config use-context arctiq-ext-mission-aws
-kubectl delete -f secrets/external-dns-aws.yml
-kubectl config use-context arctiq-ext-mission-gcp
-kubectl delete -f secrets/external-dns-gcp.yml
-```
 
 ## Caveats
 there is no current way to define the default Geolocation, 

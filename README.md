@@ -1,6 +1,6 @@
 README.md
 
-![Architecture Overview](arctiq-ext-mission.png)
+![Architecture Overview](highlevel.png)
 
 To setup the clusters, use the Makefile
 

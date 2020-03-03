@@ -1,5 +1,5 @@
 ---
-title: Arctiq Mission - Greg
+title: Kubernetes Multicluster CICD
 theme: moon
 separator: -h-
 verticalSeparator: -v-
@@ -7,12 +7,17 @@ revealOptions:
     transition: 'slide'
 ---
 
-## The mission
+## Kubernetes Multicluster CICD
+
+Greg Reboul 2020
 
 -v-
-### //goals
-* challenging and fun ✔
-* learning new valuable skills ✔
+### What
+* IaC cluster provisionning
+* Using 3 major public clouds
+* Spread out deployment
+* Full modern CI/CD pipeline
+
 
 -v-
 ### //deployment

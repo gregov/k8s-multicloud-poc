@@ -3,7 +3,7 @@
 #
 
 variable "eks_cluster_name" {
-  default = "arctiq-ext-mission-aws"
+  default = "k8s-multicloud-poc-aws"
   type    = string
 }
 
